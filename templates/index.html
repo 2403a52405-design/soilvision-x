@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoilVision-X: Flask Inference Console | SR University</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <span class="logo-leaf">🌱</span>
+            <strong>SoilVision-X</strong>
+            <span class="badge">PyTorch Swin-T Flask Server</span>
+        </div>
+        <div class="research-tag">
+            N. Nikitha Reddy · SR University
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero-card">
+            <h1>Fine-Grained Soil Type Classification</h1>
+            <p>Hierarchical Vision Transformer (Swin-T) Inference Engine for Agricultural Soil Diagnostics</p>
+            <div class="model-pill">
+                Checkpoint Status: 
+                <span class="{{ 'status-ready' if model_ready else 'status-pending' }}">
+                    {{ 'Loaded (soilvision_swin_best.pth)' if model_ready else 'Architecture Ready (Place soilvision_swin_best.pth in root)' }}
+                </span>
+            </div>
+        </section>
+
+        <section class="upload-grid">
+            <div class="card upload-card">
+                <h2>1. Upload Field Image</h2>
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="dropzone" id="dropzone">
+                        <input type="file" id="fileInput" name="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;">
+                        <div class="drop-text" id="dropText">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2D6A4F" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <p><strong>Click to browse</strong> or drag & drop soil image</p>
+                            <span class="hint">Supports JPG, PNG (224×224 Swin tensor target)</span>
+                        </div>
+                        <img id="imagePreview" class="preview-img" style="display:none;" alt="Soil Preview">
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" id="browseBtn" class="btn btn-secondary">Browse Image</button>
+                        <button type="submit" id="analyzeBtn" class="btn btn-primary" disabled>Analyze Soil</button>
+                        <button type="button" id="resetBtn" class="btn btn-light" style="display:none;">Clear</button>
+                    </div>
+                </form>
+
+                <div id="loader" class="loader-box" style="display:none;">
+                    <div class="spinner"></div>
+                    <p>Executing Shifted-Window Attention across 4 stages...</p>
+                </div>
+            </div>
+
+            <div class="card result-card" id="resultCard" style="display:none;">
+                <h2>2. Prediction Output</h2>
+                <div class="result-highlight">
+                    <span class="label">Predicted Soil Type:</span>
+                    <h3 id="predictedSoilName" class="soil-name">-</h3>
+                    <div class="conf-badge" id="confidenceBadge">Confidence: 0.00%</div>
+                </div>
+
+                <div class="probabilities-container">
+                    <h4>Class Distribution (7 Categories):</h4>
+                    <div id="probBars"></div>
+                </div>
+
+                <div class="agronomic-box" id="agronomicBox">
+                    <h4>Agronomic Profile</h4>
+                    <p id="soilCharacteristics"></p>
+                    <div class="meta-row">
+                        <span><strong>Soil Order:</strong> <span id="soilOrder"></span></span>
+                        <span><strong>pH Range:</strong> <span id="soilPh"></span></span>
+                    </div>
+                    <div class="crops-tag" id="soilMaterials"></div>
+                    <div class="crops-tag" id="soilBestPlants"></div>
+                    <div class="crops-tag" id="soilCrops"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>SoilVision-X · Department of CSE (AI & ML) · SR University · B.Tech Project Demonstration</p>
+    </footer>
+
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
